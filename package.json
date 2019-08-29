@@ -1,0 +1,21 @@
+{
+  "name": "youbox",
+  "version": "1.0.0",
+  "description": "App for managing public places playlist",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wilmendes/youbox.git"
+  },
+  "dependencies": {
+    "bluebird": "^3.5.5",
+    "express": "^4.17.1",
+    "mongodb": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.1"
+  }
+}
