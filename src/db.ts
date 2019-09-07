@@ -1,18 +1,17 @@
-const MongoDB = require('mongodb');
-const Promise = require("bluebird");
-Promise.promisifyAll(MongoDB);
+import { MongoClient, Db } from 'mongodb'
 
-class DB {
+export class DB {
     // const user = 'admin';
     // const password = 'admin';
     // const connection = `mongodb+srv://${user}:${password}@cluster0-2qspc.mongodb.net/test?retryWrites=true&w=majority`
+    connection = 'mongodb://localhost:27017/youbox';
+    client: MongoClient;
+    db: Db;
     constructor() {
-        this.connection = 'mongodb://localhost:27017/youbox';
         this.start();
     }
     async start() {
-        const MongoClient = MongoDB.MongoClient
-        this.client = await MongoClient.connectAsync(this.connection, {
+        this.client = await MongoClient.connect(this.connection, {
             useNewUrlParser: true,
             useUnifiedTopology: true
         });
@@ -20,21 +19,21 @@ class DB {
     }
 
     async getUsers() {
-        const users = await this.db.collection('ownerUser').find().toArrayAsync();
+        const users = await this.db.collection('ownerUser').find().toArray();
         return users;
     }
 
-    async getUser(email) {
+    async getUser(email: string) {
         if (!email) {
             throw 'Missing parameter: id'
         }
         const user = await this.db.collection('ownerUser').find({
             email
-        }).toArrayAsync();
+        }).toArray();
         return user;
     }
 
-    async createUser(email, password) {
+    async createUser(email: string, password: string) {
         if (!(email || password)) {
             throw 'Missing parameter'
         }
@@ -45,11 +44,9 @@ class DB {
         return user;
     }
 
-    async deleteUser(email) {
+    async deleteUser(email: string) {
         await this.db.collection('ownerUser').deleteOne({
             _id: email
         });
     }
 }
-
-module.exports = DB;

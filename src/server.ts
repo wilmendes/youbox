@@ -1,8 +1,10 @@
-const express = require('express');
+import express from "express";
+import { DB } from './db.js'
+
 const app = express();
-const DB = require('./db.js')
 const bodyParser = require('body-parser');
 class Server {
+    db: DB;
     constructor() {
         this.db = new DB();
         app.use(bodyParser());
@@ -20,7 +22,6 @@ class Server {
 
         app.get('/user/:id', async (req, res) => {
             const user = (await this.db.getUser(req.params.id))[0];
-            console.log(user)
             if (user) {
                 res.send(JSON.stringify(user));
             } else {
@@ -31,14 +32,14 @@ class Server {
         app.post('/user', async (req, res) => {
             var email = req.body.email;
             var password = req.body.password;
-            if(!(email || password)){
+            if (!(email || password)) {
                 res.status(400).send('Missing parameters');
             }
-            try{
+            try {
                 const user = await this.db.createUser(email, password);
                 console.log(user)
-            } catch(e){
-                if(e.code === 11000){
+            } catch (e) {
+                if (e.code === 11000) {
                     res.status(409).send('User already exists');
                     return;
                 } else {
@@ -52,14 +53,14 @@ class Server {
         app.delete('/user', async (req, res) => {
             console.log(req.body)
             var email = req.body.email;
-            if(!(email)){
+            if (!(email)) {
                 res.status(400).send('Missing parameter');
             }
-            try{
+            try {
                 const user = await this.db.deleteUser(email);
                 res.send('user deleted');
                 return;
-            } catch(e){
+            } catch (e) {
                 console.log(e);
                 res.status(500).send(`Error deleting user: ${JSON.stringify(e)}`);
                 return;
