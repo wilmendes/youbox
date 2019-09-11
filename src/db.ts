@@ -1,13 +1,14 @@
 import { MongoClient, Db } from 'mongodb'
 
 export class DB {
-    // const user = 'admin';
-    // const password = 'admin';
-    // const connection = `mongodb+srv://${user}:${password}@cluster0-2qspc.mongodb.net/test?retryWrites=true&w=majority`
-    connection = 'mongodb://localhost:27017/youbox';
+    user = 'admin';
+    password = 'y0u80x';
+    connection = `mongodb://${this.user}:${this.password}@ds135441.mlab.com:35441/youbox`
+    // connection = 'mongodb://localhost:27017/youbox';
     client: MongoClient;
     db: Db;
     constructor() {
+        console.log('test');
         this.start();
     }
     async start() {
