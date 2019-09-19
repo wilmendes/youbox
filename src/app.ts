@@ -9,6 +9,6 @@ app.use(express.json());
 app.use(userRouter);
 
 app.listen(port, async () => {
-    console.log((await connect()));
+    await connect();
     console.log(`Server running on port ${port}`)
 })

@@ -1,12 +1,8 @@
-import { Document, SchemaTypeOpts, Schema, model, Model } from 'mongoose';
+import { SchemaTypeOpts, Schema, model, Model } from 'mongoose';
 import validator from 'validator';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { IUserDocument } from '../interfaces';
-
-export interface IUser extends IUserDocument {
-    comparePassword(password: string): boolean;
-}
+import { IUserDocument, IUser } from '../interfaces';
 
 interface IUserModel extends Model<IUser> {
     findByCredentials: (email: string, password: string) => IUser;
