@@ -35,7 +35,11 @@ const userSchema = new Schema<IUserDocument>({
             type: String,
             required: true
         }
-    }]
+    }],
+    _owner: {
+        type: Schema.Types.ObjectId,
+        ref: 'Owner'
+    }
 });
 
 userSchema.pre('save', async function (next) {
@@ -44,7 +48,7 @@ userSchema.pre('save', async function (next) {
     if (user.isModified('password')) {
         user.password = await bcrypt.hash(user.password, 8);
     }
-    next()
+    next();
 });
 
 userSchema.methods.generateAuthToken = async function () {
