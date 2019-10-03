@@ -82,9 +82,15 @@ router.delete('/playlists/music', auth, async (req: IUserRequest, res) => {
             throw new Error('Missing parameters');
         }
         const playlist = await Playlist.findOne({ name: req.body.playlist })
-        const idx = owner.playlists.indexOf(playlist._id);
+        if (owner.playlists.indexOf(playlist._id) === -1) {
+            res.status(404).send();
+            return;
+        }
+        const idx = playlist.musics.indexOf(req.body.url);
+        console.log(playlist.musics, idx)
         if (idx === -1) {
             res.status(404).send();
+            return;
         }
         playlist.musics.splice(idx, 1);
         await playlist.save();
