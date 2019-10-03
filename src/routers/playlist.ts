@@ -44,9 +44,8 @@ router.delete('/playlists', auth, async (req: IUserRequest, res) => {
 
 router.get('/playlists', auth, async (req: IUserRequest, res) => {
     const owner = await ensureOwner(req.user, res);
-    console.log(owner.populate('playlists.name'))
-    try {        
-        Owner.populate(owner, {
+    try {
+        await Owner.populate(owner, {
             path: 'playlists',
             model: 'Playlist'
         })
@@ -56,7 +55,27 @@ router.get('/playlists', auth, async (req: IUserRequest, res) => {
     }
 });
 
+router.post('/playlists/music', auth, async (req: IUserRequest, res) => {
+    const owner = await ensureOwner(req.user, res);
 
+    try {
+        if (!(req.body.url && req.body.playlist)) {
+            throw new Error('Missing parameters');
+        }
+        const playlist = await Playlist.findOne({ name: req.body.playlist })
+        if (owner.playlists.indexOf(playlist._id) === -1) {
+            res.status(404).send();
+        }
+        playlist.musics.push(req.body.url);
+
+        console.log(req.body.url, playlist.musics);
+        await playlist.save();
+        res.status(200).send(owner.playlists);
+    } catch (e) {
+        console.log(e)
+        res.status(400).send(e);
+    }
+});
 
 async function ensureOwner(user: IUser, res: Response) {
     if (!user._owner) {
