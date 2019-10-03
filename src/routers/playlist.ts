@@ -67,10 +67,28 @@ router.post('/playlists/music', auth, async (req: IUserRequest, res) => {
             res.status(404).send();
         }
         playlist.musics.push(req.body.url);
-
-        console.log(req.body.url, playlist.musics);
         await playlist.save();
-        res.status(200).send(owner.playlists);
+        res.status(200).send();
+    } catch (e) {
+        console.log(e)
+        res.status(400).send(e);
+    }
+});
+
+router.delete('/playlists/music', auth, async (req: IUserRequest, res) => {
+    const owner = await ensureOwner(req.user, res);
+    try {
+        if (!(req.body.url && req.body.playlist)) {
+            throw new Error('Missing parameters');
+        }
+        const playlist = await Playlist.findOne({ name: req.body.playlist })
+        const idx = owner.playlists.indexOf(playlist._id);
+        if (idx === -1) {
+            res.status(404).send();
+        }
+        playlist.musics.splice(idx, 1);
+        await playlist.save();
+        res.status(200).send();
     } catch (e) {
         console.log(e)
         res.status(400).send(e);
