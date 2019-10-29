@@ -19,12 +19,17 @@ router.post('/users', async (req, res) => {
             password: req.body.password,
             _owner: owner && owner._id
         }
+        console.log(req.body)
         const user = new User(params);
         await user.save();
-        await owner.save();
+        if (owner) {
+            await owner.save();
+        }
         const token = await user.generateAuthToken();
+        console.log(user, token)
         res.status(201).send({ user, token });
     } catch (error) {
+        console.log("Error creating user: ", error)
         res.status(400).send(error);
     }
 })
@@ -54,13 +59,15 @@ router.get('/users/me', auth, async (req: IUserRequest, res) => {
 
 router.post('/users/me/logout', auth, async (req: IUserRequest, res) => {
     try {
+        console.log('Logout: ', req.body)
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token != req.token;
         })
         await req.user.save();
-        res.send();
+        res.status(200).send({});
     } catch (error) {
-        res.status(500).send(error);
+        console.log(error)
+        res.status(500).send({error: error.toString()});
     }
 });
 

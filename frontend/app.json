@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "youbox",
-    "slug": "youbox",
+    "slug": "the-starter-app",
     "privacy": "public",
     "sdkVersion": "35.0.0",
     "platforms": [
