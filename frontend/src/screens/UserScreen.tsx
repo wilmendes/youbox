@@ -3,9 +3,10 @@ import { View, Text, StyleSheet } from 'react-native';
 import Button from '../components/Button';
 import strings from '../config/strings';
 import authService from '../services/authService';
+import { Screens } from '../config/constants';
 
 interface Props {
-    newToken: (token: string) => void
+    navigation: any
 }
 export default class UserScreen extends React.Component<Props, {}> {
     constructor(public readonly props: Props) {
@@ -19,7 +20,8 @@ export default class UserScreen extends React.Component<Props, {}> {
         } catch(e){
             console.log('could not logout: ', e)
         }
-        this.props.newToken(undefined);
+        console.log(this.props.navigation)
+        this.props.navigation.navigate('AuthLoading');
     }
 
     render() {

@@ -16,7 +16,6 @@ const auth = async(req: IUserRequest, res: Response, next: NextFunction) => {
         req.token = token;
         next()
     } catch (error) {
-        console.log('ERrr', error)
         res.status(401).send({ error: 'Not authorized to access this resource' })
     }
 

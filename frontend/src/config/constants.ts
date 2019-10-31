@@ -8,4 +8,11 @@ const constants = {
   SERVER_URL: 'http://localhost:3000'
 };
 
+export enum Screens {
+  INITIAL,
+  LOGIN,
+  CREATE_USER,
+  USER
+}
+
 export default constants;

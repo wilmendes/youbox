@@ -7,7 +7,6 @@ import strings from "../config/strings";
 import authService from "../services/authService";
 import { Screens } from "../config/constants";
 import { NavigationScreenProp, NavigationState, NavigationParams } from "react-navigation";
-const imageLogo = require("../assets/images/logo2.jpg");
 
 interface State {
     email: string;
@@ -19,7 +18,7 @@ interface Props {
     navigation: NavigationScreenProp<NavigationState, NavigationParams>;
 }
 
-class LoginScreen extends React.Component<Props, State> {
+class CreateUserScreen extends React.Component<Props, State> {
     passwordInputRef = React.createRef<FormTextInput>()
     nameInputRef = React.createRef<FormTextInput>()
     constructor(public readonly props: Props) {
@@ -45,26 +44,26 @@ class LoginScreen extends React.Component<Props, State> {
     }
 
     handleEmailSubmitPress = () => {
+        if (this.nameInputRef) {
+            this.nameInputRef.current.focus();
+        }
+    }
+
+    handleNameSubmitPress = () => {
         if (this.passwordInputRef) {
             this.passwordInputRef.current.focus();
         }
     }
 
-    handleLoginPress = async () => {
-        await authService.login(this.state.email, this.state.password);
-        console.log(this.props.navigation.dangerouslyGetParent())
-        this.props.navigation.navigate('App');
-    };
-
     handleCreatePress = async () => {
-        this.props.navigation.navigate('CreateUser');
+        const response = await authService.createUser(this.state.email, this.state.password, this.state.name);
+        this.props.navigation.navigate('App');
         console.log("Create button pressed")
     }
 
     render() {
         return (
             <KeyboardAvoidingView style={styles.container} behavior="padding">
-                <Image source={imageLogo} style={styles.logo} />
                 <View style={styles.form}>
                     <FormTextInput
                         autoCapitalize='none'
@@ -77,6 +76,17 @@ class LoginScreen extends React.Component<Props, State> {
                         value={this.state.email}
                     />
                     <FormTextInput
+                        autoCapitalize='none'
+                        autoCorrect={false}
+                        keyboardType="email-address"
+                        onChangeText={this.handleNameChange}
+                        onSubmitEditing={this.handleNameSubmitPress}
+                        placeholder={strings.NAME_PLACEHOLDER}
+                        ref={this.nameInputRef}
+                        returnKeyType="next"
+                        value={this.state.name}
+                    />
+                    <FormTextInput
                         ref={this.passwordInputRef}
                         value={this.state.password}
                         onChangeText={this.handlePasswordChange}
@@ -84,7 +94,6 @@ class LoginScreen extends React.Component<Props, State> {
                         secureTextEntry={true}
                         returnKeyType="done"
                     />
-                    <Button label={strings.LOGIN} onPress={this.handleLoginPress} />
                     <Button label={strings.CREATE} onPress={this.handleCreatePress} />
                 </View>
             </KeyboardAvoidingView>
@@ -112,4 +121,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default LoginScreen;
+export default CreateUserScreen;

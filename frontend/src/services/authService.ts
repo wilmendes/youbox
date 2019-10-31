@@ -20,7 +20,7 @@ class AuthService {
             return response;
         } catch (e) {
             console.log('Could not createUser: ', e)
-            return
+            throw e
         }
     }
 
@@ -29,23 +29,18 @@ class AuthService {
             email,
             password
         });
-        try {
-            const response = await this.post('/users/login', body);
-            if (!response.token) {
-                throw ("Missing token")
-            }
-            this.saveToken(response.token);
-            return response;
-        } catch (e) {
-            console.log('Could not login: ', e)
-            return
+        const response = await this.post('/users/login', body);
+        if (!response.token) {
+            throw ("Missing token")
         }
+        this.saveToken(response.token);
+        return response;
     }
 
     async logout() {
         console.log('logout: ', this.token)
-        await this.post('/users/me/logout');
         this.deleteToken();
+        await this.post('/users/me/logout');
     }
 
     async saveToken(value) {
