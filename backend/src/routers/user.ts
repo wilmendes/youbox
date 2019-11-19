@@ -4,15 +4,24 @@ import auth from "../middleware/auth";
 import { IUserRequest } from "../interfaces";
 import Owner from "../models/Owner";
 import populateUser from "../utils/populateUser"
+import Playlist from "../models/Playlist";
 
 const router = Router();
 
 router.post('/users', async (req, res) => {
     // Create a new user
     try {
-        const owner = req.body.isOwner ? new Owner({
-            playlists: []
-        }) : undefined
+        
+        let owner;
+        let playlist;
+        if(req.body.isOwner){
+            playlist = new Playlist({
+                name: req.body.name
+            });
+            owner = new Owner({
+                playlists: [playlist._id]
+            });
+        } 
         const params = {
             name: req.body.name,
             email: req.body.email,
@@ -22,8 +31,9 @@ router.post('/users', async (req, res) => {
         console.log(req.body)
         const user = new User(params);
         await user.save();
-        if (owner) {
+        if (owner && playlist) {
             await owner.save();
+            await playlist.save();
         }
         const token = await user.generateAuthToken();
         console.log(user, token)

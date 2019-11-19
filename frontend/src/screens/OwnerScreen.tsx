@@ -26,26 +26,14 @@ export default class OwnerScreen extends React.Component<Props, State> {
 
     async updatePlaylist() {
         let playlist = (await authService.request('/playlists', 'GET'))[0];
-        if (playlist) {
-            this.setState({
-                musics: playlist.musics
-            });
-        }
+        this.setState({
+            musics: playlist.musics
+        });
         return playlist;
     }
 
     async componentDidMount() {
-        // this.setState({
-
-        // });
-        let playlist = await this.updatePlaylist();
-        console.log('Playlist: ', playlist)
-        if (!playlist) {
-            const body = JSON.stringify({
-                name: authService.user.user.name
-            });
-            await authService.post('/playlists', body);
-        }
+        await this.updatePlaylist();
     }
 
     handleLogoutPress = async () => {
@@ -96,7 +84,7 @@ export default class OwnerScreen extends React.Component<Props, State> {
     render() {
         return (
             <View style={styles.container}>
-                <Text>Owner screen</Text>
+                <Text>Playlist</Text>
                 <FlatList
                     data={this.state.musics}
                     renderItem={this.renderListItem}

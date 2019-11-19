@@ -7,18 +7,19 @@ import { createStackNavigator } from "react-navigation-stack";
 import CreateUserScreen from "./CreateUserScreen";
 import AuthLoadingScreen from "../screens/AuthLoadingScreen";
 import OwnerScreen from "./OwnerScreen";
+import SettingsScreen from "./SettingsScreen";
 // import SettingsScreen from "./screens/SettingsScreen";
 const CustomerNavigator = createDrawerNavigator({
   Home: {
     screen: UserScreen,
     navigationOptions: {
-      title: 'Playlist'
+      title: 'Estabelecimentos'
     }
     
   },
-  // Settings: {
-  //     screen: SettingsScreen
-  // }
+  Settings: {
+      screen: SettingsScreen
+  }
 },{
   initialRouteName: 'Home'
 });
@@ -27,13 +28,13 @@ const OwnerNavigator = createDrawerNavigator({
   Home: {
     screen: OwnerScreen,
     navigationOptions: {
-      title: 'Estabelecimentos'
+      title: 'Musicas'
     }
     
   },
-  // Settings: {
-  //     screen: SettingsScreen
-  // }
+  Settings: {
+      screen: SettingsScreen
+  }
 },{
   initialRouteName: 'Home'
 });

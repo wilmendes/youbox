@@ -3,8 +3,14 @@ import jwt from "jsonwebtoken"
 import { Request, Response, NextFunction } from "express"
 import { IUserRequest } from "../interfaces"
 
-const auth = async(req: IUserRequest, res: Response, next: NextFunction) => {
-    const token = req.header('Authorization').replace('Bearer ', '')
+const auth = async (req: IUserRequest, res: Response, next: NextFunction) => {
+    const head = req.header('Authorization')
+    if (!head) {
+        console.log('Header:  ', head)
+        res.status(400).send({ error: 'Missing authorization header' });
+        return;
+    }
+    const token = head.replace('Bearer ', '')
     try {
         const data = jwt.verify(token, process.env.JWT_KEY);
         console.log('data', token)

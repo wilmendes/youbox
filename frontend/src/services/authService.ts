@@ -34,6 +34,7 @@ class AuthService {
         });
         const response = await this.post('/users/login', body);
         if (!response.token) {
+            console.log('Missing token', response)
             throw ("Missing token")
         }
         this.saveUser(response);
@@ -50,9 +51,10 @@ class AuthService {
 
     async saveUser(user) {
         try {
+            this.token = user.token;
+            console.log('saving user: ', this.token)
             await AsyncStorage.setItem('token', user.token);
             await AsyncStorage.setItem('user', JSON.stringify(user));
-            this.token = user.token;
         } catch (error) {
             console.log('AsyncStorage Error: ' + error.message);
         }
@@ -70,6 +72,7 @@ class AuthService {
     }
 
     async deleteToken() {
+        console.log('deleting token')
         await AsyncStorage.removeItem('token')
         this.token = '';
     }
@@ -93,6 +96,7 @@ class AuthService {
         if (body) {
             request.body = body;
         }
+        console.log('Request mande: ', request, url);
         const response = await fetch(url, request);
         if (response.status < 200 || response.status > 300) {
             var error: any = new Error(response.statusText || '' + response.status)

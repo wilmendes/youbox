@@ -56,6 +56,18 @@ router.get('/playlists', auth, async (req: IUserRequest, res) => {
     }
 });
 
+router.get('/allPlaylists', auth, async (req: IUserRequest, res) => {
+    const owners = await Owner.find({});
+    try {
+        const playlists = await Promise.all(
+            owners.filter(o => o.playlists[0])
+                .map(o => Playlist.findOne({ _id: o.playlists[0] })))
+        res.status(200).send(playlists);
+    } catch (e) {
+        res.status(400).send(e);
+    }
+});
+
 router.post('/playlists/music', auth, async (req: IUserRequest, res) => {
     const owner = await ensureOwner(req.user, res);
 
