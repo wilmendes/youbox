@@ -5,8 +5,9 @@ import FormTextInput from "../components/FormTextInput";
 import colors from "../config/colors";
 import strings from "../config/strings";
 import authService from "../services/authService";
-import { Screens } from "../config/constants";
 import { NavigationScreenProp, NavigationState, NavigationParams } from "react-navigation";
+import { getUserScreen } from "../util/utils";
+
 const imageLogo = require("../assets/images/logo2.jpg");
 
 interface State {
@@ -52,8 +53,8 @@ class LoginScreen extends React.Component<Props, State> {
 
     handleLoginPress = async () => {
         await authService.login(this.state.email, this.state.password);
-        console.log(this.props.navigation.dangerouslyGetParent())
-        this.props.navigation.navigate('App');
+        console.log('logging in');
+        this.props.navigation.navigate(getUserScreen(authService.user));
     };
 
     handleCreatePress = async () => {

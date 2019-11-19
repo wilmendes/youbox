@@ -5,13 +5,15 @@ import FormTextInput from "../components/FormTextInput";
 import colors from "../config/colors";
 import strings from "../config/strings";
 import authService from "../services/authService";
-import { Screens } from "../config/constants";
+import { CheckBox } from 'react-native-elements'
 import { NavigationScreenProp, NavigationState, NavigationParams } from "react-navigation";
+import { getUserScreen } from "../util/utils";
 
 interface State {
     email: string;
     password: string;
     name: string;
+    isOwner: boolean;
 }
 
 interface Props {
@@ -28,7 +30,8 @@ class CreateUserScreen extends React.Component<Props, State> {
     readonly state: State = {
         email: "",
         password: "",
-        name: ""
+        name: "",
+        isOwner: false
     };
 
     handleEmailChange = (email: string) => {
@@ -56,8 +59,8 @@ class CreateUserScreen extends React.Component<Props, State> {
     }
 
     handleCreatePress = async () => {
-        const response = await authService.createUser(this.state.email, this.state.password, this.state.name);
-        this.props.navigation.navigate('App');
+        const response = await authService.createUser(this.state.email, this.state.password, this.state.name, this.state.isOwner);
+        this.props.navigation.navigate(getUserScreen(authService.user));
         console.log("Create button pressed")
     }
 
@@ -93,6 +96,12 @@ class CreateUserScreen extends React.Component<Props, State> {
                         placeholder={strings.PASSWORD_PLACEHOLDER}
                         secureTextEntry={true}
                         returnKeyType="done"
+                    />
+                    <CheckBox
+                        title='Click Here'
+                        checked={this.state.isOwner}
+                        // value={this.state.checked}
+                        onPress={() => this.setState({ isOwner: !this.state.isOwner })}
                     />
                     <Button label={strings.CREATE} onPress={this.handleCreatePress} />
                 </View>

@@ -1,16 +1,35 @@
 import { createSwitchNavigator, createAppContainer } from "react-navigation";
 import { createDrawerNavigator } from "react-navigation-drawer"
 
-import HomeScreen from "../screens/HomeScreen";
 import UserScreen from "./UserScreen";
 import LoginScreen from "./LoginScreen";
 import { createStackNavigator } from "react-navigation-stack";
 import CreateUserScreen from "./CreateUserScreen";
 import AuthLoadingScreen from "../screens/AuthLoadingScreen";
+import OwnerScreen from "./OwnerScreen";
 // import SettingsScreen from "./screens/SettingsScreen";
-const AppNavigator = createDrawerNavigator({
+const CustomerNavigator = createDrawerNavigator({
   Home: {
-    screen: UserScreen
+    screen: UserScreen,
+    navigationOptions: {
+      title: 'Playlist'
+    }
+    
+  },
+  // Settings: {
+  //     screen: SettingsScreen
+  // }
+},{
+  initialRouteName: 'Home'
+});
+
+const OwnerNavigator = createDrawerNavigator({
+  Home: {
+    screen: OwnerScreen,
+    navigationOptions: {
+      title: 'Estabelecimentos'
+    }
+    
   },
   // Settings: {
   //     screen: SettingsScreen
@@ -47,8 +66,11 @@ const App = createSwitchNavigator({
   Auth: {
     screen: AuthStack,
   },
-  App: {
-    screen: AppNavigator,
+  Customer: {
+    screen: CustomerNavigator,
+  },
+  Owner: {
+    screen: OwnerNavigator
   }
 },
   { initialRouteName: 'AuthLoading' });

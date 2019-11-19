@@ -59,14 +59,14 @@ router.get('/users/me', auth, async (req: IUserRequest, res) => {
 
 router.post('/users/me/logout', auth, async (req: IUserRequest, res) => {
     try {
-        console.log('Logout: ', req.body)
+        console.log('Logout: ', req.body, req.user.name)
         req.user.tokens = req.user.tokens.filter((token) => {
             return token.token != req.token;
         })
         await req.user.save();
         res.status(200).send({});
     } catch (error) {
-        console.log(error)
+        console.log('Logout Error: ', error)
         res.status(500).send({error: error.toString()});
     }
 });

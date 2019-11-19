@@ -1,5 +1,5 @@
 import * as React from "react";
-import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, TouchableOpacityProps } from "react-native";
 import colors from "../config/colors";
 
 interface Props {
@@ -7,11 +7,11 @@ interface Props {
   onPress: () => void;
 }
 
-class Button extends React.Component<Props> {
+class Button extends React.Component<Props & TouchableOpacityProps> {
   render() {
-    const { label, onPress } = this.props;
+    const { label, onPress, style } = this.props;
     return (
-      <TouchableOpacity style={styles.container} onPress={onPress}>
+      <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
         <Text style={styles.text}>{label}</Text>
       </TouchableOpacity>
     );

@@ -22,6 +22,7 @@ router.post('/playlists', auth, async (req: IUserRequest, res) => {
         res.status(200).send();
     } catch (e) {
         res.status(400).send(e);
+        console.log('Could not create playlist', e)
     }
 });
 
@@ -68,7 +69,7 @@ router.post('/playlists/music', auth, async (req: IUserRequest, res) => {
         }
         playlist.musics.push(req.body.url);
         await playlist.save();
-        res.status(200).send();
+        res.status(200).send({});
     } catch (e) {
         console.log(e)
         res.status(400).send(e);
@@ -94,7 +95,7 @@ router.delete('/playlists/music', auth, async (req: IUserRequest, res) => {
         }
         playlist.musics.splice(idx, 1);
         await playlist.save();
-        res.status(200).send();
+        res.status(200).send({});
     } catch (e) {
         console.log(e)
         res.status(400).send(e);
