@@ -96,7 +96,6 @@ class AuthService {
         if (body) {
             request.body = body;
         }
-        console.log('Request mande: ', request, url);
         const response = await fetch(url, request);
         if (response.status < 200 || response.status > 300) {
             var error: any = new Error(response.statusText || '' + response.status)

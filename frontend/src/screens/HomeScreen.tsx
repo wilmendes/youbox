@@ -8,21 +8,35 @@ import CreateUserScreen from "./CreateUserScreen";
 import AuthLoadingScreen from "../screens/AuthLoadingScreen";
 import OwnerScreen from "./OwnerScreen";
 import SettingsScreen from "./SettingsScreen";
-// import SettingsScreen from "./screens/SettingsScreen";
-const CustomerNavigator = createDrawerNavigator({
-  Home: {
+import CustomerPlaylistScreen from "./CustomerPlaylistScreen";
+
+
+const CustomerHomeNavigator = createStackNavigator({
+  List: {
     screen: UserScreen,
     navigationOptions: {
       title: 'Estabelecimentos'
     }
-    
+  },
+  Musics: {
+    screen: CustomerPlaylistScreen
+  }
+}, {
+  initialRouteName: 'List'
+});
+
+const CustomerNavigator = createDrawerNavigator({
+  Home: {
+    screen: CustomerHomeNavigator,
   },
   Settings: {
-      screen: SettingsScreen
+    screen: SettingsScreen
   }
-},{
+}, {
   initialRouteName: 'Home'
 });
+
+
 
 const OwnerNavigator = createDrawerNavigator({
   Home: {
@@ -30,12 +44,12 @@ const OwnerNavigator = createDrawerNavigator({
     navigationOptions: {
       title: 'Musicas'
     }
-    
+
   },
   Settings: {
-      screen: SettingsScreen
+    screen: SettingsScreen
   }
-},{
+}, {
   initialRouteName: 'Home'
 });
 

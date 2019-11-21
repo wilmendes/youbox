@@ -4,8 +4,9 @@ import Button from '../components/Button';
 import strings from '../config/strings';
 import authService from '../services/authService';
 import FormTextInput from '../components/FormTextInput';
+import { NavigationScreenProp, NavigationState } from 'react-navigation';
 interface Props {
-    navigation: any
+    navigation: NavigationScreenProp<NavigationState>
 }
 
 interface State {
@@ -23,9 +24,7 @@ export default class UserScreen extends React.Component<Props, State> {
     }
 
     async updatePlaylist() {
-        console.log('User in request:', authService.user, authService.token)
         let playlists = (await authService.request('/allPlaylists', 'GET'));
-        console.log('Requested Playslists', playlists);
         if (playlists) {
             this.setState({
                 playlists: playlists.map(p => p.name)
@@ -53,29 +52,23 @@ export default class UserScreen extends React.Component<Props, State> {
     //     await this.updatePlaylist();
     // }
 
-    removeMusic = (item) => {
+    navigateToPlaylist = (item) => {
         return async () => {
-            const body = {
-                playlist: authService.user.user.name,
-                url: item
-            }
-            console.log('Deleting: ', item)
-            await authService.request('/playlists/music', 'DELETE', JSON.stringify(body));
-            await this.updatePlaylist();
-
+            this.props.navigation.navigate('Musics',{
+                playlist: item
+            });
         }
     }
 
     renderListItem = ({ item }) =>
         <View style={styles.listItemContainer}>
-            <Text style={styles.listItem}>{item}</Text>
-            {/* <Button style={styles.listItemButton} onPress={this.removeMusic(item)} label="Remove"></Button> */}
+            {/* <Text style={styles.listItem}>{item}</Text> */}
+            <Button style={styles.listItemButton} onPress={this.navigateToPlaylist(item)} label={item}></Button>
         </View>
 
     render() {
         return (
             <View style={styles.container}>
-                <Text>Estabelecimentos</Text>
                 <FlatList
                     data={this.state.playlists}
                     renderItem={this.renderListItem}
