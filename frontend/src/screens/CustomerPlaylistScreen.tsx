@@ -5,15 +5,16 @@ import strings from '../config/strings';
 import authService from '../services/authService';
 import FormTextInput from '../components/FormTextInput';
 import { NavigationScreenProp, NavigationState } from 'react-navigation';
+import { Music } from '../util/utils';
 interface Props {
   navigation: NavigationScreenProp<NavigationState>
 }
 
 interface State {
-  musics: string[]
+  musics: Music[]
 }
 export default class CustomerPlaylistScreen extends React.Component<Props, State> {
-  state = {
+  state: State = {
     musics: []
   }
   playlist: string;
@@ -26,7 +27,7 @@ export default class CustomerPlaylistScreen extends React.Component<Props, State
 
   async updatePlaylist() {
     let playlist = (await authService.request('/allPlaylists', 'GET')).filter(p => p.name === this.playlist)[0];
-    console.log('Playlists: ', this.playlist, playlist.musics)
+    (playlist.musics as Music[]).sort((m1, m2) => m2.votes - m1.votes);
     this.setState({
       musics: playlist.musics
     });
@@ -38,14 +39,24 @@ export default class CustomerPlaylistScreen extends React.Component<Props, State
     await this.updatePlaylist();
   }
 
-  handleListItemPress = () => {
-    console.log('pressed')
+  handleListItemPress = (item: Music) => {
+    return async () => {
+      const body = {
+        playlist: this.playlist,
+        url: item.url
+      }
+      console.log('Votingo for: ', body)
+      await authService.post('/playlists/music/vote', JSON.stringify(body));
+      await this.updatePlaylist();
+      console.log('pressed')
+
+    }
   }
 
-  renderListItem = ({ item }) =>
+  renderListItem = ({ item }: {item: Music}) =>
     <View style={styles.listItemContainer}>
-      <Text style={styles.listItem}>{item}</Text>
-      <Button style={styles.listItemButton} onPress={this.handleListItemPress} label="Press"></Button>
+      <Text style={styles.listItem}>{item.name}</Text>
+      <Button style={styles.listItemButton} onPress={this.handleListItemPress(item)} label={'Vote: ' + item.votes}></Button>
     </View>
 
   render() {

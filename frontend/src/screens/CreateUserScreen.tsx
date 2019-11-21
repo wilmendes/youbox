@@ -59,7 +59,7 @@ class CreateUserScreen extends React.Component<Props, State> {
     }
 
     handleCreatePress = async () => {
-        const response = await authService.createUser(this.state.email, this.state.password, this.state.name, this.state.isOwner);
+        await authService.createUser(this.state.email, this.state.password, this.state.name, this.state.isOwner);
         this.props.navigation.navigate(getUserScreen(authService.user));
         console.log("Create button pressed")
     }
@@ -98,7 +98,7 @@ class CreateUserScreen extends React.Component<Props, State> {
                         returnKeyType="done"
                     />
                     <CheckBox
-                        title='Click Here'
+                        title='Gerenciador'
                         checked={this.state.isOwner}
                         // value={this.state.checked}
                         onPress={() => this.setState({ isOwner: !this.state.isOwner })}

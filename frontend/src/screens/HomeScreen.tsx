@@ -9,7 +9,7 @@ import AuthLoadingScreen from "../screens/AuthLoadingScreen";
 import OwnerScreen from "./OwnerScreen";
 import SettingsScreen from "./SettingsScreen";
 import CustomerPlaylistScreen from "./CustomerPlaylistScreen";
-
+import YoutubePlayerScreen from "./YoutubePlayerScreen";
 
 const CustomerHomeNavigator = createStackNavigator({
   List: {
@@ -36,11 +36,23 @@ const CustomerNavigator = createDrawerNavigator({
   initialRouteName: 'Home'
 });
 
-
+const YoutubePlayerNavigator = createStackNavigator({
+  MusicList: {
+    screen: OwnerScreen,
+    navigationOptions: {
+      title: 'Musicas'
+    }
+  },
+  Player: {
+    screen: YoutubePlayerScreen
+  }
+}, {
+  initialRouteName: 'MusicList'
+});
 
 const OwnerNavigator = createDrawerNavigator({
   Home: {
-    screen: OwnerScreen,
+    screen: YoutubePlayerNavigator,
     navigationOptions: {
       title: 'Musicas'
     }
@@ -52,6 +64,8 @@ const OwnerNavigator = createDrawerNavigator({
 }, {
   initialRouteName: 'Home'
 });
+
+
 
 
 const AuthStack = createStackNavigator({

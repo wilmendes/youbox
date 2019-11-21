@@ -24,8 +24,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     backgroundColor: colors.DODGER_BLUE,
-    marginBottom: 12,
-    paddingVertical: 12,
+    // marginBottom: 12,
+    // paddingVertical: 12,
     borderRadius: 4,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.7)"
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
   text: {
     color: colors.WHITE,
     textAlign: "center",
-    height: 20
+    // height: 20
   }
 });
 

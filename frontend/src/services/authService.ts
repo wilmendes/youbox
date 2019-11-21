@@ -99,6 +99,7 @@ class AuthService {
         const response = await fetch(url, request);
         if (response.status < 200 || response.status > 300) {
             var error: any = new Error(response.statusText || '' + response.status)
+            console.log('Request Failed: ', error)
             error.response = response
             throw error;
         }

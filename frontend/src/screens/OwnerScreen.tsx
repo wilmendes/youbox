@@ -4,16 +4,17 @@ import Button from '../components/Button';
 import strings from '../config/strings';
 import authService from '../services/authService';
 import FormTextInput from '../components/FormTextInput';
+import { Music, getIdFromVideo } from '../util/utils';
 interface Props {
     navigation: any
 }
 
 interface State {
-    musics: string[],
+    musics: Music[],
     currentMusic: string
 }
 export default class OwnerScreen extends React.Component<Props, State> {
-    state = {
+    state: State = {
         musics: [],
         currentMusic: ''
     }
@@ -26,6 +27,7 @@ export default class OwnerScreen extends React.Component<Props, State> {
 
     async updatePlaylist() {
         let playlist = (await authService.request('/playlists', 'GET'))[0];
+        (playlist.musics as Music[]).sort((m1, m2) => m2.votes - m1.votes);
         this.setState({
             musics: playlist.musics
         });
@@ -51,22 +53,28 @@ export default class OwnerScreen extends React.Component<Props, State> {
     }
 
     addMusic = async () => {
+        const title = await getVideoTitle(this.state.currentMusic);
         const body = {
             playlist: authService.user.user.name,
-            url: this.state.currentMusic
+            url: this.state.currentMusic,
+            name: title
         }
         await authService.post('/playlists/music', JSON.stringify(body));
         // this.setState({
         //     musics: this.state.musics.concat([this.state.currentMusic])
         // })
+        console.log('Music title', title)
         await this.updatePlaylist();
+        this.setState({
+            currentMusic: ''
+        })
     }
 
-    removeMusic = (item) => {
+    removeMusic = (item: Music) => {
         return async () => {
             const body = {
                 playlist: authService.user.user.name,
-                url: item
+                url: item.url
             }
             console.log('Deleting: ', item)
             await authService.request('/playlists/music', 'DELETE', JSON.stringify(body));
@@ -75,16 +83,25 @@ export default class OwnerScreen extends React.Component<Props, State> {
         }
     }
 
-    renderListItem = ({ item }) =>
+    playMusic = (music: Music) => {
+        return () => {
+            this.props.navigation.navigate('Player', {
+                music: music.url
+            });
+            console.log('playing: ', music)
+        }
+    }
+
+    renderListItem = ({ item }: { item: Music }) =>
         <View style={styles.listItemContainer}>
-            <Text style={styles.listItem}>{item}</Text>
+            <Button style={styles.listItem} onPress={this.playMusic(item)} label={item.name}></Button>
+            <Text>Votes: {item.votes} </Text>
             <Button style={styles.listItemButton} onPress={this.removeMusic(item)} label="Remove"></Button>
         </View>
 
     render() {
         return (
             <View style={styles.container}>
-                <Text>Playlist</Text>
                 <FlatList
                     data={this.state.musics}
                     renderItem={this.renderListItem}
@@ -114,6 +131,19 @@ export default class OwnerScreen extends React.Component<Props, State> {
     }
 }
 
+async function getVideoTitle(url) {
+
+    var videoId = getIdFromVideo(url);
+    var ytApiKey = 'AIzaSyBnEsN-L81pBLh-VpMKKnNTFteqd0XW5jI';
+    const requestUrl = "https://www.googleapis.com/youtube/v3/videos?part=snippet&id=" + videoId + "&key=" + ytApiKey;
+    const data = await fetch(requestUrl, {
+        method: 'GET'
+    });
+    const response = await data.json();
+    console.log(response.items[0].snippet.title)
+    return response.items[0].snippet.title;
+}
+
 const styles = StyleSheet.create({
     container: {
         flex: 1,
@@ -136,12 +166,13 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: "center",
-        margin: 3,
+        // margin: 3,
         paddingHorizontal: 5,
-        paddingVertical: 5,
+        // paddingVertical: 5,
     },
     listItemButton: {
-        flex: 1
+        flex: 1,
+        height: 30
     },
     listContainer: {
         width: 400,

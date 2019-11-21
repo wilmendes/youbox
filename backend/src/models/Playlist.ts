@@ -7,7 +7,11 @@ const PlaylistModel = new Schema({
         required: true,
         unique: true
     },
-    musics: [{ type: Schema.Types.String }]
+    musics: [{
+        name: String,
+        url: String,
+        votes: Number
+    }]
 });
 
 const Playlist = model<IPlaylistDocument>('Playlist', PlaylistModel);

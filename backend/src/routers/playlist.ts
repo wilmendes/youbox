@@ -72,14 +72,38 @@ router.post('/playlists/music', auth, async (req: IUserRequest, res) => {
     const owner = await ensureOwner(req.user, res);
 
     try {
-        if (!(req.body.url && req.body.playlist)) {
+        if (!(req.body.url && req.body.playlist && req.body.name)) {
             throw new Error('Missing parameters');
         }
         const playlist = await Playlist.findOne({ name: req.body.playlist })
         if (owner.playlists.indexOf(playlist._id) === -1) {
             res.status(404).send();
         }
-        playlist.musics.push(req.body.url);
+        playlist.musics.push({
+            name: req.body.name,
+            url: req.body.url,
+            votes: 0
+        });
+        await playlist.save();
+        res.status(200).send({});
+    } catch (e) {
+        console.log(e)
+        res.status(400).send(e);
+    }
+});
+
+router.post('/playlists/music/vote', auth, async (req: IUserRequest, res) => {
+    try {
+        if (!(req.body.url && req.body.playlist)) {
+            throw new Error('Missing parameters');
+        }
+        const playlist = await Playlist.findOne({ name: req.body.playlist })
+        if (!playlist) {
+            res.status(404).send();
+        }
+        const music = playlist.musics.find(music => req.body.url === music.url);
+        music.votes++;
+        // playlist.musics.sort((m1, m2) => m1.votes + m2.votes);
         await playlist.save();
         res.status(200).send({});
     } catch (e) {
@@ -99,12 +123,13 @@ router.delete('/playlists/music', auth, async (req: IUserRequest, res) => {
             res.status(404).send();
             return;
         }
-        const idx = playlist.musics.indexOf(req.body.url);
-        console.log(playlist.musics, idx)
-        if (idx === -1) {
+        const music = playlist.musics.find(music => req.body.url === music.url);
+        console.log('DEleting music: ', music)
+        if (!music) {
             res.status(404).send();
             return;
         }
+        const idx = playlist.musics.indexOf(music);
         playlist.musics.splice(idx, 1);
         await playlist.save();
         res.status(200).send({});

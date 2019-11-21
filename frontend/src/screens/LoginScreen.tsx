@@ -85,8 +85,8 @@ class LoginScreen extends React.Component<Props, State> {
                         secureTextEntry={true}
                         returnKeyType="done"
                     />
-                    <Button label={strings.LOGIN} onPress={this.handleLoginPress} />
-                    <Button label={strings.CREATE} onPress={this.handleCreatePress} />
+                    <Button label={strings.LOGIN} style={styles.button} onPress={this.handleLoginPress} />
+                    <Button label={strings.CREATE} style={styles.button} onPress={this.handleCreatePress} />
                 </View>
             </KeyboardAvoidingView>
         );
@@ -110,6 +110,10 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "center",
         width: "80%"
+    },
+    button: {
+        height: 30,
+        marginTop: 5
     }
 });
 

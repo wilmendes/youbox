@@ -16,7 +16,11 @@ export interface IUser extends IUserDocument {
 
 export interface IPlaylistDocument extends Document {
     name: string;
-    musics: string[];
+    musics: Array<{
+        name: string,
+        url: string,
+        votes: number
+    }>;
 }
 
 export interface IOwnerDocument extends Document {
